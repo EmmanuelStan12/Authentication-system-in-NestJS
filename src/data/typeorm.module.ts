@@ -9,14 +9,14 @@ import { Global, Logger, Module } from '@nestjs/common'
             provide: DataSource,
             inject: [],
             useFactory: async () => {
-                const logger = new Logger()
+                const logger = new Logger(TypeORMModule.name)
                 try {
                     const datasource = new DataSource({
                         type: 'mysql',
                         host: 'localhost',
                         port: 3306,
-                        username: 'chat_app_user',
-                        password: 'chat_app_user',
+                        username: 'nest_user',
+                        password: 'nest_user',
                         database: 'chat_app_db',
                         synchronize: true,
                         entities: [`${__dirname}/../**/**.entity{.ts,.js}`]

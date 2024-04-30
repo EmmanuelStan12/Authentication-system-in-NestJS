@@ -19,4 +19,18 @@ export class UserEntity {
 
     @Column()
     lastname: string;
+
+    constructor();
+
+    constructor(firstname: string, lastname: string, email: string, username: string, password: string, id?: number);
+
+    constructor(firstname?: string, lastname?: string, email?: string, username?: string, password?: string, id?: number) {
+        this.firstname = firstname
+        this.lastname = lastname
+        this.email = email
+        this.username = username
+        this.id = id
+        this.password = password
+    }
+
 }
