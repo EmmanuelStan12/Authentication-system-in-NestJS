@@ -17,6 +17,20 @@ export class LoginUserDTO {
 
 }
 
+export class UpdateUserDTO {
+    @MinLength(3, { message: 'First name must be at least 3 characters long' })
+    @MaxLength(100, { message: 'First name cannot exceed 100 characters' })
+    firstname: string;
+
+    @MinLength(3, { message: 'Last name must be at least 3 characters long' })
+    @MaxLength(100, { message: 'Last name cannot exceed 100 characters' })
+    lastname: string;
+
+    @MinLength(3, { message: 'Username must be at least 3 characters long' })
+    @MaxLength(100, { message: 'Username cannot exceed 100 characters' })
+    username: string;
+}
+
 export class UserDTO {
     @IsNotEmpty({ message: 'First name is required' })
     @MinLength(3, { message: 'First name must be at least 3 characters long' })

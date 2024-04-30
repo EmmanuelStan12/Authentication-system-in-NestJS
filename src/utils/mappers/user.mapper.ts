@@ -7,5 +7,6 @@ export function toUserEntity(userDto: UserDTO): UserEntity {
 }
 
 export function toUserDTO(userEntity: UserEntity): UserDTO {
+    delete userEntity['password']
     return { ...userEntity }
 }
