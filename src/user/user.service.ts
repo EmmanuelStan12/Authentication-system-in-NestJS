@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from './models/user.entity';
 import { LoginUserDTO, UpdateUserDTO, UserDTO } from 'src/utils/dto/user.dto';
 import { toUserDTO, toUserEntity } from 'src/utils/mappers/user.mapper';
-import { comparePassword } from 'src/utils/password.utils';
+import { comparePassword, hashPassword } from 'src/utils/password.utils';
 import { JwtService } from '@nestjs/jwt';
 import { removeUndefined } from 'src/utils/mappers/generic.mapper';
 
@@ -18,13 +18,15 @@ export class UserService {
 
     async createUser(userDto: UserDTO): Promise<UserDTO> {
         try {
-            const user = this.userRepository.create(toUserEntity(userDto))
+            const entity = toUserEntity(userDto)
+            entity.password = hashPassword(entity.password)
+            const user = this.userRepository.create(entity)
             const savedUser = await this.userRepository.save(user)
             return toUserDTO(savedUser)
         } catch (e) {
-            if (e.code == 23505) {
+            if (e.errno === 1062) {
                 this.logger.error(e.message, e.stack)
-                throw new HttpException('Username already exists', HttpStatus.CONFLICT)
+                throw new HttpException('Username/Email already exists', HttpStatus.CONFLICT)
             }
             this.logger.error(e.message, e.stack)
             throw new InternalServerErrorException('Something went wrong. Try again!')
@@ -39,7 +41,7 @@ export class UserService {
             .getOne()
 
         if (!user) {
-            throw new Error('User not found')
+            throw new BadRequestException('User not found')
         }
 
         return user

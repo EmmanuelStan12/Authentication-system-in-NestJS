@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm'
 import { Global, Logger, Module } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config';
 
 @Global()
 @Module({
@@ -7,17 +8,17 @@ import { Global, Logger, Module } from '@nestjs/common'
     providers: [
         {
             provide: DataSource,
-            inject: [],
-            useFactory: async () => {
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => {
                 const logger = new Logger(TypeORMModule.name)
                 try {
                     const datasource = new DataSource({
                         type: 'mysql',
-                        host: 'localhost',
-                        port: 3306,
-                        username: 'nest_user',
-                        password: 'nest_user',
-                        database: 'chat_app_db',
+                        host: configService.get('database.host'),
+                        port: configService.get<number>('database.port'),
+                        username: configService.get('database.user'),
+                        password: configService.get('database.password'),
+                        database: configService.get('database.name'),
                         synchronize: true,
                         entities: [`${__dirname}/../**/**.entity{.ts,.js}`]
                     });

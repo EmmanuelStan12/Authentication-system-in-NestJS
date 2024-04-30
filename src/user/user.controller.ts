@@ -6,6 +6,12 @@ import { toUserDTO } from 'src/utils/mappers/user.mapper';
 @Controller('user')
 export class UserController {
     constructor(private userService: UserService) { }
+    @Get('profile')
+    async profile(@Req() request: Request): Promise<UserDTO> {
+        const authPayload: Record<string, any> = request['payload']
+        const user = await this.userService.findUserByUsernameOrEmail(authPayload.username)
+        return toUserDTO(user)
+    }
 
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -14,12 +20,11 @@ export class UserController {
     }
 
     @Put('update')
-    async updateUser(@Body() user: UserDTO): Promise<UserDTO> {
-
+    async updateUser(@Body() updateUserDto: UserDTO, @Req() request: Request): Promise<UserDTO> {
+        const authPayload: Record<string, any> = request['payload']
+        const id = authPayload.id
+        return this.userService.findAndUpdateUser(id, updateUserDto)
     }
 
-    @Get('profile')
-    async profile(@Req() request: Request): Promise<UserDTO> {
-        const payload
-    }
+
 }

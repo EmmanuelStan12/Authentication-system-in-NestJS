@@ -1,20 +1,11 @@
 import { IsEmail, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator"
 
 export class LoginUserDTO {
-    @IsEmail({}, { message: 'Invalid email format' })
-    @IsNotEmpty({ message: 'Email is required' })
-    email: string;
+    @IsNotEmpty({ message: 'Email/Username is required' })
+    usernameOrEmail: string;
 
-    @MinLength(8, { message: 'Password must be at least 8 characters long' })
-    @MaxLength(100, { message: 'Password cannot exceed 100 characters' })
-    @IsNotEmpty({ message: 'Password is required' })
-    @Matches(
-        /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-        { message: 'Password must contain at least one digit or special character, one uppercase letter, one lowercase letter' }
-    )
+    @IsNotEmpty({ message: 'Password must not be empty' })
     password: string;
-
-
 }
 
 export class UpdateUserDTO {

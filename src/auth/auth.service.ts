@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { LoginUserDTO, UserDTO } from 'src/utils/dto/user.dto';
@@ -15,14 +15,15 @@ export class AuthService {
     }
 
     async signIn(userDto: LoginUserDTO): Promise<Record<string, any>> {
-        const { email, password } = userDto
+        const { usernameOrEmail, password } = userDto
         try {
 
-            const user = await this.userService.findUserByUsernameOrEmail(email)
+            console.log(userDto)
+            const user = await this.userService.findUserByUsernameOrEmail(usernameOrEmail)
             const isPasswordValid = comparePassword(password, user.password)
 
             if (!isPasswordValid) {
-                throw new UnauthorizedException('Email/Password is invalid')
+                throw new BadRequestException('Email/Password is invalid')
             }
 
             const payload = { sub: user.id, username: user.username }
@@ -33,8 +34,9 @@ export class AuthService {
             result['accessToken'] = accessToken
             return result
         } catch (e) {
+            console.log(e)
             this.logger.error(e.message, e.stack)
-            if (e instanceof UnauthorizedException) {
+            if (e instanceof BadRequestException) {
                 throw e
             }
             throw new InternalServerErrorException('Something went wrong. Try again!')
