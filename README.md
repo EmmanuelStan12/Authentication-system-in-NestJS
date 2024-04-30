@@ -35,12 +35,13 @@ Before running the application, ensure that you have the following installed:
    Create a `.env` file in the root directory and configure the following environment variables:
 
    ```plaintext
-   PORT=
-   JWT_SECRET=
-   DB_HOST=
-   DB_USER=
-   DB_PASSWORD=
-   ```
+    database.user=
+    database.password=
+    database.host=
+    database.name=
+    database.port=
+    jwt.secret=
+  ```
 
 ## Usage
 
@@ -58,6 +59,6 @@ Before running the application, ensure that you have the following installed:
 
 - `POST /auth/register`: Register a new user
 - `POST /auth/login`: Login with username/email and password to obtain JWT token
-- `POST /auth/logout`: Logout and invalidate JWT token
-- `GET /profile`: Protected route requiring authentication (example)
+- `GET /user/profile`: Get your profile information (With the JWT Token in your header)
+- `PUT /user/update`: Update your profile
 
