@@ -18,7 +18,6 @@ export class AuthService {
         const { usernameOrEmail, password } = userDto
         try {
 
-            console.log(userDto)
             const user = await this.userService.findUserByUsernameOrEmail(usernameOrEmail)
             const isPasswordValid = comparePassword(password, user.password)
 
@@ -34,7 +33,6 @@ export class AuthService {
             result['accessToken'] = accessToken
             return result
         } catch (e) {
-            console.log(e)
             this.logger.error(e.message, e.stack)
             if (e instanceof BadRequestException) {
                 throw e
